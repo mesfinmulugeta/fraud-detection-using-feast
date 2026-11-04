@@ -1,0 +1,5 @@
+feature_repo_*/data/
+.ipynb_checkpoints/
+__pycache__/
+
+.DS_Store

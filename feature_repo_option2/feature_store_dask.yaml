@@ -1,0 +1,15 @@
+project: fraud_detection_option2
+# The registry stores the feature definitions (entities, sources, feature views, ...) applied with `feast apply`
+registry: data/registry.db
+provider: local
+# Same project and registry as feature_store.yaml, but with the default Dask-based offline store
+# (`type: file` is an alias of `type: dask`). Used in the notebook to compare the two offline stores.
+offline_store:
+    type: file
+# Online store: only needed for low-latency serving (materialize + get_online_features)
+online_store:
+    type: sqlite
+    path: data/online_store.db
+entity_key_serialization_version: 3
+auth:
+    type: no_auth

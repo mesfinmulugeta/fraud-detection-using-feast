@@ -1,0 +1,14 @@
+project: fraud_detection_option1
+# The registry stores the feature definitions (entities, sources, feature views, ...) applied with `feast apply`
+registry: data/registry.db
+provider: local
+# Offline store: point-in-time joins over the local Parquet files, run in-process by DuckDB
+offline_store:
+    type: duckdb
+# Online store: only needed for low-latency serving (materialize + get_online_features)
+online_store:
+    type: sqlite
+    path: data/online_store.db
+entity_key_serialization_version: 3
+auth:
+    type: no_auth
