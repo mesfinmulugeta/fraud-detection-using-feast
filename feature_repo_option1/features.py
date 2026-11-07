@@ -15,7 +15,9 @@ The windowed customer/terminal features are computed in the notebook (following 
 Handbook, Chapter 3) and written as Parquet files partitioned by day (``date=%Y-%m-%d``).
 """
 
+import os
 from datetime import timedelta
+from pathlib import Path
 
 import pandas as pd
 
@@ -24,7 +26,11 @@ from feast.data_format import ParquetFormat
 from feast.on_demand_feature_view import on_demand_feature_view
 from feast.types import Float64, Int64, UnixTimestamp
 
-TRANSFORMED_DATA_DIR = "/Users/mesfinmulugeta/projects/personal/card-fraud/simulated-data-transformed"
+# Must match the notebook: set FRAUD_DATA_PREFIX to use a location other than <repo root>/data
+DATA_PREFIX = Path(
+    os.environ.get("FRAUD_DATA_PREFIX", Path(__file__).resolve().parents[1] / "data")
+).expanduser().resolve()
+TRANSFORMED_DATA_DIR = str(DATA_PREFIX / "simulated-data-transformed")
 
 WINDOW_SIZES_IN_DAYS = [1, 7, 30]
 DELAY_PERIOD_IN_DAYS = 7
