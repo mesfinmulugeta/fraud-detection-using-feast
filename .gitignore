@@ -1,3 +1,4 @@
+/data/
 feature_repo_*/data/
 .ipynb_checkpoints/
 __pycache__/
