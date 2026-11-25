@@ -75,9 +75,11 @@ def predict(transactions: list[Transaction]):
     # A customer or terminal missing from the online store (never materialized) can't be scored. Feast's online read
     # doesn't apply the feature views' TTL, so a row materialized long before TX_DATETIME is still returned and scored.
     complete = model_inputs.notna().all(axis=1)
-    probabilities = pd.Series(None, index=model_inputs.index, dtype=object)
+    scores = pd.Series(float("nan"), index=model_inputs.index)
     if complete.any():
-        probabilities[complete] = model.predict_proba(model_inputs[complete])[:, 1]
+        scores[complete] = model.predict_proba(model_inputs[complete])[:, 1]
+    # NaN isn't valid JSON: an unscored transaction gets null
+    probabilities = [None if pd.isna(score) else float(score) for score in scores]
 
     # The inputs are returned with the score so the caller can inspect them; a production service would log them
     model_inputs = model_inputs.astype(object).where(model_inputs.notna(), None)
