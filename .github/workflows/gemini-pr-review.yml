@@ -19,7 +19,7 @@ jobs:
           # Optional: Model selection (defaults to Gemini 2.5/Flash/Pro)
           model: "gemini-3.5-flash-lite"
           # Optional: Exclude lockfiles, assets, and build artifacts
-          exclude: "*.md,*.json,package-lock.json,poetry.lock,*.yaml,*.yml,dist/*,build/*"
+          exclude: "*.md,*.json,package-lock.json,poetry.lock,*.yaml,*.yml,dist/*,build/*,*.ipynb"
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
