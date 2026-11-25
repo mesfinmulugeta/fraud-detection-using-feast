@@ -59,6 +59,10 @@ def health():
 
 @app.post("/predict")
 def predict(transactions: list[Transaction]):
+    # Feast can't read an empty batch of entity rows
+    if not transactions:
+        return []
+
     # The entity keys select the online rows; event_timestamp is the request data of the on-demand feature view
     entity_rows = [
         {"CUSTOMER_ID": t.CUSTOMER_ID, "TERMINAL_ID": t.TERMINAL_ID, "event_timestamp": t.TX_DATETIME}
@@ -68,7 +72,8 @@ def predict(transactions: list[Transaction]):
     online_features["TX_AMOUNT"] = [t.TX_AMOUNT for t in transactions]
     model_inputs = online_features[INPUT_FEATURES].astype(float)
 
-    # A customer or terminal missing from the online store (new, or older than the TTL) can't be scored
+    # A customer or terminal missing from the online store (never materialized) can't be scored. Feast's online read
+    # doesn't apply the feature views' TTL, so a row materialized long before TX_DATETIME is still returned and scored.
     complete = model_inputs.notna().all(axis=1)
     probabilities = pd.Series(None, index=model_inputs.index, dtype=object)
     if complete.any():
